@@ -13,6 +13,10 @@ type album struct {
 	Price  float64 `json:"price"`
 }
 
+func (a album) isEqual(b album) bool {
+	return a.ID == b.ID && a.Title == b.Title && a.Artist == b.Artist && a.Price == b.Price
+}
+
 type errorJson struct {
 	Error string
 }
@@ -24,14 +28,18 @@ var albums = []album{
 }
 
 func main() {
+	router := getRouter()
+	router.Run("0.0.0.0:8080")
+}
+
+func getRouter() *gin.Engine {
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.POST("/albums", postAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 	router.DELETE("/albums/:id", deleteAlbumByID)
 	router.PUT("/albums/:id", updateByID)
-
-	router.Run("0.0.0.0:8080")
+	return router
 }
 
 func getAlbums(c *gin.Context) {
